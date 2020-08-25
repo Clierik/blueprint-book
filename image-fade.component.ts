@@ -30,8 +30,8 @@ import { Component, OnInit, Renderer2, ViewChild } from '@angular/core';
 export class SomeAppComponent {
     @ViewChild('background') background: ElementRef;
 
-    public gallery = [  // pictures low quality, need to be replaced
-        '/assets/1.jpg', // bug in the code, shows this image (index: 0) only one time
+    public gallery = [
+        '/assets/1.jpg',
         '/assets/2.jpg',
         '/assets/3.jpg',
         '/assets/4.jpg',
