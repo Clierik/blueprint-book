@@ -1,4 +1,5 @@
 // component that contains logic for swapping images with a fade in/out effect without leaving a blank background
+// written on Angular+
 
 import { Component, OnInit, Renderer2, ViewChild } from '@angular/core';
 
