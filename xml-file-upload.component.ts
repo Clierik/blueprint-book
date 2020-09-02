@@ -1,6 +1,7 @@
 // TODO code needs some cleaning up for simplicity, especialy the html
 // TODO there is a a bug were input cache needs clearing after items were removed and added for uploading
 // TODO need to add info for setting up basic backend
+// written on Angular+
 
 import { Component, OnInit } from '@angular/core';
 import { environment } from 'src/environments/environment';
