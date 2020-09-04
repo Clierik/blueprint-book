@@ -1,4 +1,3 @@
-// TODO code needs some cleaning up for simplicity, especialy the html
 // TODO there is a a bug were input cache needs clearing after items were removed and added for uploading
 // TODO need to add info for setting up basic backend
 // written on Angular+
@@ -20,7 +19,6 @@ import { environment } from 'src/environments/environment';
 
     <header>
       <div class="headerTitle">
-        <!-- <object ...></object> probably is not the best solution, 
           took the one that gave most control over size manipulation, 
           fill color changed in the svg file itself -->
         <object type="image/svg+xml" data="./../../../assets/share-square-solid.svg" class="titleImg"></object>
@@ -47,10 +45,8 @@ import { environment } from 'src/environments/environment';
         <table>
           <tr>
             <th class="checkbox">
-              <!-- potentialy could use an external lib for quick styling, example:
                 https://lokesh-coder.github.io/pretty-checkbox/ -->
               <mat-checkbox></mat-checkbox>
-              <!-- leaving checkboxes out since now they are nonessential to the given task -->
             </th>
             <th>IMPORTED DATA</th>
             <th>IMPORT RANGE</th>
@@ -73,7 +69,6 @@ import { environment } from 'src/environments/environment';
             <td class="progressCol">
               <div *ngIf="file.progress < 100">
                 <p>{{file.progress}}% </p>
-                <!-- didn't look to deep into progress bars, so atm using the stock angular materials one -->
                 <mat-progress-bar mode="determinate" [value]="file.progress"></mat-progress-bar>
               </div>
       
@@ -99,14 +94,6 @@ import { environment } from 'src/environments/environment';
         <input value="B10:M4" />
       </div>
 
-      <!-- TODO -->
-      <div *ngIf="this.fileList.lenght > 0">
-        <p style="font-weight: bold;">X</p>
-        <p>Cancel Remaining Uploads</p>
-        <p style="color: grey;">{{uploadFileRemainingCount}} of {{uploadFileTotalCount}}</p>
-        <!-- for canceling all uploads -->
-        <button (click)="cancelFileUpload()">Cancel all</button>
-      </div>
     </footer>
   `,
   styleUrls: ['./body-comp.component.scss']
@@ -116,7 +103,6 @@ export class BodyCompComponent implements OnInit {
 
   filesInDb: FileListInterface[];
   fileList: any = []; // file event array, from form input
-  abortAllUploads: boolean = false; // ಠ_ಠ most likely a terrible idea
   uploadFileTotalCount: number = 0;
   uploadFileRemainingCount: number = 0;
 
@@ -142,8 +128,6 @@ export class BodyCompComponent implements OnInit {
         file.filename = i++;
         console.log(file.filename);
         this.submit(file, file.filename);
-        // question if its posible to pass a addEventListener() as a variable 
-        // for aborting individual files, logic being 
         let newObj: FileListInterface = {
           originalname: file.name,
           filename: file.filename,
@@ -153,46 +137,31 @@ export class BodyCompComponent implements OnInit {
       })
       this.uploadFileTotalCount, this.uploadFileRemainingCount = this.fileList.length;
     });
-
-    // form.addEventListener('abort', event => {
-    //   console.log('aborting all');
-
-    // });
   }
 
   submit(file, fileIndex) {
-    // if xhr is moved outside this.submit() scope, submit only uploads one file at a time,
-    // with this I have no idea how to access xhr.abort() to abort all downloads
     let xhr: any = new XMLHttpRequest();
     let formData = new FormData();
     formData.append('singleFile', file);
     xhr.upload.addEventListener('progress', progressEvent => {
       this.updateProgress(progressEvent, fileIndex);
     });
-    xhr.open('POST', `${environment.url}/singleFile`);
+    xhr.open('POST', `http://localhost:3000/singleFile`);
     xhr.send(formData);
-    // the problem starts after uploads are complete and if the page is not refreshed, this.filesInDb
-    // array starts acting strange by adding extra files, sometimes doubling 
   }
 
   updateProgress(progressEvent, fileIndex) {
     if (progressEvent.lengthComputable === true) {
       let percentComplete = progressEvent.loaded / progressEvent.total * 100;
-      // console.log(Math.floor(percentComplete) + ` ${file.name}`);
       let i = this.filesInDb.findIndex(file => file.filename === fileIndex);
       this.filesInDb[i].progress = Math.floor(percentComplete);
-      // need a "easy on the resourses" way to check "if all downloads are complete" 
-      // to refresh the array without refreshing the page (call this.listFiles())
-      // console.log(this.filesInDb.findIndex(file => file.progress === 100) === -1 && 
-      // );
       if (Math.floor(percentComplete) === 100) {
         this.uploadFileRemainingCount--;
       }
     }
   }
 
-  cancelFileUpload(inputEvent) { // attempt at removing files from the array thats holding them
-    this.abortAllUploads = !this.abortAllUploads;
+  cancelFileUpload(inputEvent) {
     let inputFiles = inputEvent.target.files;
     this.filesInDb.splice(this.filesInDb.length - inputFiles.length, inputFiles.length);
     this.listFiles();
