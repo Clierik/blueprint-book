@@ -11,7 +11,7 @@
     return newArr;
   }
 
-  // terrible for nested and cmoplex obj/arr's
+  // terrible for nested and complex obj/arr's
   deepClone(arrToCopy) {
     return newArr = JSON.parse(JSON.stringify(arrToCopy))
   }
