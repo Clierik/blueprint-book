@@ -3,7 +3,8 @@ import { Observable, throwError as observableThrowError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { catchError } from 'rxjs/operators';
 
-@Injectible() export class ErrorHandler implements HttpInterceptor {
+@Injectible() 
+export class ErrorHandler implements HttpInterceptor {
 
 constructor() {}
 
