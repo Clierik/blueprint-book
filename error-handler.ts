@@ -3,14 +3,15 @@ import { Observable, throwError as observableThrowError } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { catchError } from 'rxjs/operators';
 
-@Injectible() 
+@Injectable() 
 export class ErrorHandler implements HttpInterceptor {
 
-constructor() {}
+    constructor() {}
 
-intercept( request: HttpRequest<any>, next: HttpHandler ): Observable<HttpEvent<any>> {
-    return next.hanble(request).pipe(catchError( error => {
-      return observableTrowError(error);
+    intercept( request: HttpRequest<any>, next: HttpHandler ): Observable<HttpEvent<any>> {
+        return next.handle(request).pipe(catchError( error => {
+          return observableThrowError(error);
+        }
+      ))
     }
-  ))
 }
